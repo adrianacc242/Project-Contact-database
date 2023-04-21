@@ -1,0 +1,71 @@
+#!/bin/bash
+#Project - Hospital contact database
+
+reset # clear screen
+
+print_menu(){ # show function menu
+  echo "1. Search"
+  echo "2. Add"
+  echo "3. Delete"
+  echo "4. Modify"
+  echo "5. Exit"
+}
+
+
+search_record(){ # search function
+  echo " What record would you like to display?"
+  read -p "Enter name: " name
+  results=$(grep -i "^$name" "hospital_records")
+  if [-z "$results" ]; then
+      echo "contact not found"
+    else
+      echo "Contact found"
+      echo "$result"
+fi
+}
+
+show_record(){
+  exec 3<~/hospital_records
+  cat <&3 | while read line
+  do
+     echo $line
+  done
+}
+
+
+add_record(){ #add function
+echo "Please enter the following"
+  read -p "please enter medical id-> " medical id
+  read -p "please enter full name -> " name
+  read -p "please enter phone number -> " phone number
+  read -p "please enter email -> " email
+  read -p "please enter address -> " address
+  read -p "please enter dr -> " dr
+  echo "adding record to hospital_records"
+  echo "$medicalid $name $phone $email $address $dr " >> "hospital_records"
+  echo "record added! displaying records: "
+  cat hospital_records
+  show_record
+}
+
+# delete function
+delete_record(){
+  echo "What record would you like to delete?"
+  read -p "Enter record name:" name
+  results+$(grep -i "^$name" "hospital_records")
+  if [-z "$result"}; then 
+    echo "Record not found"
+   else
+   echo "record found"
+   echo "$result"
+   read ip "Confirm to delete $name ? Y/N" -n 1 -r
+   echo
+   if [[ $REPLY =~ ^[Yy} ]]; then
+   
+}
+
+# modify function
+modify_record(){
+  echo "Record you would like to modify"
+  read "Please enter record name:" name
+}
