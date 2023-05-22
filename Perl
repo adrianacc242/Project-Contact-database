@@ -1,0 +1,85 @@
+# delete function
+sub delete_record {
+  print "Please enter ID of the record to delete: ";
+  my $id = <>;
+  chomp($id);
+
+  # Read the existing records from the file
+  open(my $filehandle_r, '<', 'contact_database_perl.dat') or die "Cannot open file: $!\n";
+  my @records = <$filehandle_r>;
+  close($filehandle_r);
+
+  # Open the file for writing
+  open(my $filehandle_w, '>', 'contact_database_perl.dat') or die "Cannot open file: $!\n";
+  my $deleted = 0;  # Flag to indicate if a record is deleted
+
+  # Iterate over the records and delete the matching one
+  foreach my $line (@records) {
+    chomp($line);
+    if ($line !~ m/^$id/) {
+      print $filehandle_w "$line\n";
+    } else {
+      $deleted = 1;  # Set the flag to indicate deletion
+    }
+  }
+
+  # Close the file
+  close($filehandle_w);
+
+  # Print the appropriate message based on deletion status
+  if ($deleted) {
+    print "Record with ID $id has been deleted.\n";
+  } else {
+    print "Record with ID $id was not found.\n";
+  }
+}
+
+# modify function
+sub modify_record {
+  print "Please enter ID of the record to modify: ";
+  my $id = <>;
+  chomp($id);
+
+  # Read the existing records from the file
+  open(my $filehandle_r, '<', 'contact_database_perl.dat') or die "Cannot open file: $!\n";
+  my @records = <$filehandle_r>;
+  close($filehandle_r);
+
+  # Open the file for writing
+  open(my $filehandle_w, '>', 'contact_database_perl.dat') or die "Cannot open file: $!\n";
+  my $modified = 0;  # Flag to indicate if a record is modified
+
+  # Iterate over the records and modify the matching one
+  foreach my $line (@records) {
+    chomp($line);
+    if ($line =~ m/^$id/) {
+      # Perform the modification
+      # Here you can prompt the user for new data and update the record
+
+      # For now, let's just print a message
+      print "Modifying record with ID $id...\n";
+      $modified = 1;  # Set the flag to indicate modification
+    }
+    print $filehandle_w "$line\n";
+  }
+
+  # Close the file
+  close($filehandle_w);
+
+  # Print the appropriate message based on modification status
+  if ($modified) {
+    print "Record with ID $id has been modified.\n";
+  } else {
+    print "Record with ID $id was not found.\n";
+  }
+}
+
+# Rest of the code remains the same...
+
+# program begins here
+print "Welcome to contact app v0....\n";
+print "Please make a choice from the following menu!\n";
+print_menu();    # call show menu function
+$choice = <>; # read choice
+chomp($choice);
+while ($choice != 5){     # loop as long as choice is
