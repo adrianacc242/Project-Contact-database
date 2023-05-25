@@ -1,0 +1,119 @@
+#!/bin/bash
+# Project - hospital records
+
+reset # clear screen
+
+print_menu() {
+  echo "1. Search"
+  echo "2. Add"
+  echo "3. Delete"
+  echo "4. Modify"
+  echo "5. Exit"
+}
+
+search_record() {
+  read -p "Enter the name to search: " name
+  results=$(grep -i "$name" "medical_records.sh")
+  if [ -z "$results" ]; then
+    echo "Contact not found"
+  else
+    echo "Record found:"
+    echo "$results"
+  fi
+}
+
+show_records() {
+  echo "Displaying records:"
+  cat "medical_records.sh"
+}
+
+add_record() {
+  echo "Please enter the following:"
+  read -p "Please enter medical id: " medical_id
+  read -p "Please enter full name: " name
+  read -p "Please enter phone number: " phone
+  read -p "Please enter email: " email
+  read -p "Please enter address: " address
+  read -p "Please enter dr: " dr
+  echo "Adding record to medical_records.sh..."
+  echo "$medical_id $name $phone $email $address $dr" >> medical_records.sh
+  echo "Record added!"
+ 
+}
+
+delete_record() {
+  read -p "Enter the name of the record to delete: " name
+  results=$(grep -i "$name" "medical_records.sh")
+  if [ -z "$results" ]; then
+    echo "Record not found"
+  else
+    echo "Record found:"
+    echo "$results"
+    read -p "Confirm to delete $name? (Y/N): " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+      sed -i "/^$name/d" "medical_records.sh"
+      echo "Record deleted"
+      show_records
+    fi
+  fi
+}
+
+modify_record() {
+  echo "Record you would like to modify"
+  read -p "Please enter record name: " name
+  results=$(grep -i "$name" "medical_records.sh")
+  if [ -z "$results" ]; then
+    echo "Record not found"
+  else
+    echo "Record found:"
+    echo "$results"
+    read -p "Enter the new full name (leave blank to keep current): " new_name
+    read -p "Enter the new phone number (leave blank to keep current): " new_phone
+    read -p "Enter the new email (leave blank to keep current): " new_email
+    read -p "Enter the new address (leave blank to keep current): " new_address
+    read -p "Enter the new dr (leave blank to keep current): " new_dr
+
+    if [ -n "$new_name" ]; then
+  sed -i "/^$name/ s/[^ ]* \([^ ]*\) .*/$new_name \1/" "medical_records.sh"
+fi
+if [ -n "$new_phone" ]; then
+  sed -i "/^$name/ s/[^ ]* [^ ]* \([^ ]*\) .*/$new_phone \1/" "medical_records.sh"
+fi
+if [ -n "$new_email" ]; then
+  sed -i "/^$name/ s/[^ ]* [^ ]* [^ ]* \([^ ]*\) .*/$new_email \1/" "medical_records.sh"
+fi
+if [ -n "$new_address" ]; then
+  sed -i "/^$name/ s/[^ ]* [^ ]* [^ ]* [^ ]* \([^ ]*\) .*/$new_address \1/" "medical_records.sh"
+fi
+if [ -n "$new_dr" ]; then
+  sed -i "/^$name/ s/[^ ]* [^ ]* [^ ]* [^ ]* [^ ]* \([^ ]*\)/$new_dr \1/" "medical_records.sh"
+fi
+	echo "Record modified sucessfully"
+  fi
+}
+
+while true; do
+  print_menu
+  read -p "Enter your choice (1-5): " choice
+  echo
+  case $choice in
+    1) search_record ;;
+    2) add_record ;;
+    3) delete_record ;;
+    4) modify_record ;;
+    5) exit ;;
+    *) echo "Invalid choice. Please try again." ;;
+  esac
+  echo
+done
+
+7354 Adriana Cano 4083645507 adriana454@gmail.com 526 N 3rd st San Jose Ca 95112 Smith
+3872 idfw 302832 kdjef8fsg fniwfwq fiwie
+92482 fjwfw 293374 fjwurhwe 39efwe wfkkwe
+49843 anaufjsdu 439774 sjihw 4njqwn gjeirgh
+4934 Adriana Cano 4089101554 adriana23@gmail.com 526 N 3rd st San Jose Ca 95112 Smith
+34934 Brenda Cipriano 4082736363 bcipriano34@gmail.com 526 N Santa Clara St San Jose Ca 95112 Smith
+2836 Ian Cruz 4082739265 Icruz@gmail.com 450 W Santa Clara Ca 95110 Smith
+     
+3847 Meron mekuria 4083647567 mekuria@gmail.com 488 N Santa Clara Ca 95112 Smith
