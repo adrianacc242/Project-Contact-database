@@ -1,0 +1,231 @@
+#!/usr/bin/perl					
+					
+# Project - Contact Database with Perl					
+# Version 1.0					
+					
+# show menu function					
+sub print_menu {					
+  print "1. Search\n";					
+  print "2. Add\n";					
+  print "3. Delete\n";					
+  print "4. Modify\n";					
+  print "5. Exit\n";					
+}					
+					
+# search function					
+sub search_record {					
+  print "Enter the name to search: ";					
+  my $search_name = <STDIN>;					
+  chomp($search_name);					
+					
+  open(my $filehandle, '<', 'records.pl') or die "Cannot open file: $!\n";	
+  my $found = 0;					
+  while (my $line = <$filehandle>) {					
+    chomp($line);					
+    my ($id, $name, $phone, $email, $address, $dr) = split("\t", $line);	
+    if (lc($name) eq lc($search_name)) {					
+      print "ID: $id, Name: $name, Phone: $phone, Email: $email, Address: $address, DR: $dr\n";					
+      $found = 1;					
+    }					
+  }					
+  close($filehandle);					
+					
+  print "No records found!\n" unless $found;					
+}					
+					
+					
+# add record to file					
+sub add_to_file {					
+  open(my $filehandle, '>>', 'records.pl') or die "Cannot open file: $!\n";	
+  print $filehandle join("\t", @_) . "\n";					
+  close($filehandle);					
+}					
+					
+# show records					
+sub show_record {					
+  open(my $filehandle, '<', 'records.pl') or die "Cannot open file: $!\n";	
+  while (my $line = <$filehandle>) {					
+    chomp($line);					
+    my ($id, $name, $phone, $email, $address, $dr) = split("\t", $line);	
+    print "ID: $id, Name: $name, Phone: $phone, Email: $email, Address: $address, DR: $dr\n";					
+  }					
+  close($filehandle);					
+}					
+					
+# check if number					
+sub check_number {					
+  my ($value) = @_;					
+  return $value =~ /^\d+$/;					
+}					
+					
+# check if string					
+sub check_string {					
+  my ($value) = @_;					
+  return $value =~ /^[a-zA-Z\s]+$/;					
+}					
+					
+# check if email					
+sub check_email {					
+  my ($value) = @_;					
+  return $value =~ /^[^\s@]+@[^\s@]+\.[^\s@]+$/;				
+}					
+					
+# add function					
+sub add_record {					
+  print "Enter ID: ";					
+  my $id = <STDIN>;					
+  chomp($id);					
+  until (check_number($id)) {					
+    print "Invalid input! Enter a number for ID: ";				
+    $id = <STDIN>;					
+    chomp($id);					
+  }					
+					
+  print "Enter Full Name: ";					
+  my $name = <STDIN>;					
+  chomp($name);					
+  until (check_string($name)) {					
+    print "Invalid input! Enter a valid name: ";				
+    $name = <STDIN>;					
+    chomp($name);					
+  }					
+					
+  print "Enter Phone Number: ";					
+  my $phone = <STDIN>;					
+  chomp($phone);					
+					
+  print "Enter Email: ";					
+  my $email = <STDIN>;					
+  chomp($email);					
+  until (check_email($email)) {					
+    print "Invalid input! Enter a valid email address: ";			
+    $email = <STDIN>;					
+    chomp($email);					
+  }					
+					
+  print "Enter Address: ";					
+  my $address = <STDIN>;					
+  chomp($address);					
+					
+  print "Enter DR: ";					
+  my $dr = <STDIN>;					
+  chomp($dr);					
+					
+  add_to_file($id, $name, $phone, $email, $address, $dr);			
+  print "Record added successfully!\n";					
+}					
+					
+# delete function					
+sub delete_record {					
+  print "Enter the ID of the record to delete: ";				
+  my $delete_id = <STDIN>;					
+  chomp($delete_id);					
+					
+  open(my $filehandle, '<', 'records.pl') or die "Cannot open file: $!\n";	
+  my @records = <$filehandle>;					
+  close($filehandle);					
+					
+  my $found = 0;					
+  open($filehandle, '>', 'records.pl') or die "Cannot open file: $!\n";		
+  foreach my $record (@records) {					
+    chomp($record);					
+    my ($id) = split("\t", $record);					
+    if ($id eq $delete_id) {					
+      $found = 1;					
+    } else {					
+      print $filehandle "$record\n";					
+    }					
+  }					
+  close($filehandle);					
+					
+  if ($found) {					
+    print "Record with ID $delete_id deleted successfully!\n";			
+  } else {					
+    print "Record with ID $delete_id not found!\n";				
+  }					
+}					
+					
+# modify function					
+sub modify_record {					
+  print "Enter the ID of the record to modify: ";				
+  my $modify_id = <STDIN>;					
+  chomp($modify_id);					
+					
+  open(my $filehandle, '<', 'records.pl') or die "Cannot open file: $!\n";	
+  my @records = <$filehandle>;					
+  close($filehandle);					
+					
+  my $found = 0;					
+  open($filehandle, '>', 'records.pl') or die "Cannot open file: $!\n";		
+  foreach my $record (@records) {					
+    chomp($record);					
+    my ($id, $name, $phone, $email, $address, $dr) = split("\t", $record);	
+    if ($id eq $modify_id) {					
+      $found = 1;					
+					
+      print "Enter new Name (currently: $name): ";				
+      my $new_name = <STDIN>;					
+      chomp($new_name);					
+      $name = $new_name;					
+					
+      print "Enter new Phone (currently: $phone): ";				
+      my $new_phone = <STDIN>;					
+      chomp($new_phone);					
+      $phone = $new_phone;					
+					
+      print "Enter new Email (currently: $email): ";				
+      my $new_email = <STDIN>;					
+      chomp($new_email);					
+      until (check_email($new_email)) {					
+        print "Invalid input! Enter a valid email address: ";			
+        $new_email = <STDIN>;					
+        chomp($new_email);					
+      }					
+      $email = $new_email;					
+					
+      print "Enter new Address (currently: $address): ";			
+      my $new_address = <STDIN>;					
+      chomp($new_address);					
+      $address = $new_address;					
+					
+      print "Enter new DR (currently: $dr): ";					
+      my $new_dr = <STDIN>;					
+      chomp($new_dr);					
+      $dr = $new_dr;					
+    }					
+    print $filehandle "$id\t$name\t$phone\t$email\t$address\t$dr\n";		
+  }					
+  close($filehandle);					
+					
+  if ($found) {					
+    print "Record with ID $modify_id modified successfully!\n";			
+  } else {					
+    print "Record with ID $modify_id not found!\n";				
+  }					
+}					
+					
+print "Welcome to the Contact App v1.0!\n";					
+					
+while (1) {					
+  print "Please make a choice from the following menu:\n";			
+  print_menu();					
+  print "Enter your choice: ";					
+  my $choice = <STDIN>;					
+  chomp($choice);					
+					
+  if ($choice == 1) {					
+    search_record();					
+  } elsif ($choice == 2) {					
+    add_record();					
+  } elsif ($choice == 3) {					
+    delete_record();					
+  } elsif ($choice == 4) {					
+    modify_record();					
+  } elsif ($choice == 5) {					
+    last;  # Exit the loop					
+  } else {					
+    print "Invalid choice! Please try again.\n";				
+  }					
+}					
+					
+print "Thank you for using the Contact App!\n";
